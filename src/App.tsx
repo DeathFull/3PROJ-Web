@@ -1,10 +1,15 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainPage from "./components/MainPage.tsx";
+import { AuthContextProvider } from "./context/AuthContext.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />,
+    element: (
+      <AuthContextProvider>
+        <MainPage />
+      </AuthContextProvider>
+    ),
     children: [
       {
         path: "",
