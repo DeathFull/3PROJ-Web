@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainPage from "./components/MainPage.tsx";
 import { AuthContextProvider } from "./context/AuthContext.tsx";
+import { Center, Flex } from "@chakra-ui/react";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <div>Home</div>,
+        element: (
+          <Flex align="center" justify="center" h={100}>
+            <Center>Home</Center>
+          </Flex>
+        ),
       },
       {
         path: "about",
