@@ -32,7 +32,7 @@ export default function Header() {
         px={{ base: 4 }}
         py={{ base: 2 }}
         color={useColorModeValue("gray.600", "white")}
-        bg={useColorModeValue("white", "gray.800")}
+        bg={useColorModeValue("transparent", "gray.800")}
         borderStyle={"solid"}
         borderColor={useColorModeValue("gray.200", "gray.900")}
         borderBottom={1}
@@ -53,11 +53,12 @@ export default function Header() {
         </Flex>
         <Flex justify={{ base: "center", md: "start" }} flex={{ base: 1 }}>
           <Text
-            color={useColorModeValue("gray.800", "white")}
+              color={useColorModeValue("orange.800", "white")}
             fontFamily={"heading"}
+            fontSize={{ base: "xl", md: "2xl" }}
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
           >
-            Logo
+            UniFinances
           </Text>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -73,26 +74,27 @@ export default function Header() {
         >
           <Button
             as={"a"}
-            fontSize={"sm"}
+            color={"white"}
+            fontSize={{ base: "xl", md: "2xl" }}
             fontWeight={400}
             href={"#"}
             variant={"link"}
           >
-            Sign In
+            Connexion
           </Button>
           <Button
             as={"a"}
             display={{ base: "none", md: "inline-flex" }}
             color={"white"}
-            fontSize={"sm"}
+            fontSize={{ base: "xl", md: "2xl" }}
             fontWeight={600}
-            bg={"pink.400"}
+            bg={"#E1A03D"}
             _hover={{
               bg: "pink.300",
             }}
             href={"#"}
           >
-            Sign Up
+            Créer un compte
           </Button>
         </Stack>
       </Flex>
@@ -268,41 +270,7 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
   {
-    label: "Inspiration",
-    children: [
-      {
-        label: "Explore Design Work",
-        subLabel: "Trending Design to inspire you",
-        href: "#",
-      },
-      {
-        label: "New & Noteworthy",
-        subLabel: "Up-and-coming Designers",
-        href: "#",
-      },
-    ],
-  },
-  {
-    label: "Find Work",
-    children: [
-      {
-        label: "Job Board",
-        subLabel: "Find your dream design job",
-        href: "#",
-      },
-      {
-        label: "Freelance Projects",
-        subLabel: "An exclusive list for contract work",
-        href: "#",
-      },
-    ],
-  },
-  {
-    label: "Learn Design",
-    href: "#",
-  },
-  {
-    label: "Hire Designers",
+    label: "A propos",
     href: "#",
   },
 ];
