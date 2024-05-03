@@ -1,6 +1,6 @@
 import Header from "./Header.tsx";
 import Footer from "./Footer.tsx";
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
 function MainPage() {
@@ -8,9 +8,9 @@ function MainPage() {
     <>
       <Flex pos="relative" direction="column" minH="100vh">
         <Header />
-        <Box flex={1} h="100%">
+        <Flex justify={"center"} direction={"column"} flex={1}>
           <Outlet />
-        </Box>
+        </Flex>
         <Footer />
       </Flex>
     </>
