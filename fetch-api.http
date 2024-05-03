@@ -1,0 +1,5 @@
+### GET /
+GET https://api.uni-finance.fr/
+
+### GET /users
+GET https://api.uni-finance.fr/users
