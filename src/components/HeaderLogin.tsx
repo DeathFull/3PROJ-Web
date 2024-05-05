@@ -3,8 +3,7 @@ import {
     Button,
     Collapse,
     Flex,
-    Icon,
-    Link,
+    Icon, Link,
     Stack,
     Text,
     useBreakpointValue,
@@ -19,7 +18,8 @@ export default function Header() {
     const { isOpen } = useDisclosure();
 
     return (
-        <Box>
+        <Box
+         bg={useColorModeValue("#D27E00", "gray.800")}>
             <Flex
                 align={"center"}
                 direction={{ base: "column", md: "row" }}
@@ -28,7 +28,6 @@ export default function Header() {
                 px={{ base: 4 }}
                 py={{ base: 2 }}
                 color={useColorModeValue("gray.600", "white")}
-                bg={useColorModeValue("transparent", "gray.800")}
                 borderStyle={"solid"}
                 borderColor={useColorModeValue("gray.200", "gray.900")}
                 borderBottom={1}
@@ -40,7 +39,7 @@ export default function Header() {
                 >
                     <Text
                         ml={{ base: 0, md: 150 }}
-                        color={"#D27E00"}
+                        color={"#ffffff"}
                         fontFamily={"heading"}
                         fontSize={{ base: "2xl", md: "4xl" }}
                         fontWeight={600}
