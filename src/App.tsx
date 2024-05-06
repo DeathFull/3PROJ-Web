@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainPage from "./components/MainPage.tsx";
 import { AuthContextProvider } from "./context/AuthContext.tsx";
-import {ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import AuthPage from "./components/AuthPage.tsx";
 import Home from "./components/Home.tsx";
+import DashboardHome from "./components/dashboard/DashboardHome.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
         path: "login",
         element: <AuthPage />,
       },
+      {
+        path: "dashboard",
+        element: <DashboardHome />,
+      },
     ],
   },
 ]);
@@ -37,7 +42,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <ChakraProvider resetCSS={false}>
-        <RouterProvider router={router} />
+      <RouterProvider router={router} />
     </ChakraProvider>
   );
 }
