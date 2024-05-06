@@ -88,7 +88,7 @@ export default function Header() {
                         _hover={{
                             bg: "#f6bf3f",
                         }}
-                        href={"#"}
+                        href={"inscription"}
                     >
                         Créer un compte
                     </Button>
