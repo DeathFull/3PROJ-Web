@@ -1,28 +1,18 @@
-import { Center, Grid, GridItem, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading } from "@chakra-ui/react";
 
 function DashboardHome() {
   return (
     <>
-      <Grid
-        gap="0"
-        autoRows={""}
-        templateColumns={"20vw 80vw"}
-        templateAreas={`"nav main"
-                  "nav main"`}
-        color="blackAlpha.700"
-        fontWeight="bold"
+      <Box
+        justifyContent={"center"}
+        flexDir={"column"}
+        display={"flex"}
+        w={"100%"}
       >
-        <GridItem area={"nav"} bg="#d17d00">
-          Nav
-        </GridItem>
-        <GridItem alignSelf={"center"} area={"main"}>
-          <Center>
-            <Heading>
-              Bienvenue {/* TODO: Récupérer le nom de l'utilisateur */ "Rudy"} !
-            </Heading>
-          </Center>
-        </GridItem>
-      </Grid>
+        <Center>
+          <Heading>Bienvenue</Heading>
+        </Center>
+      </Box>
     </>
   );
 }
