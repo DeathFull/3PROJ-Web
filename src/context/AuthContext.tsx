@@ -1,9 +1,12 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import instance from "../api/ApiConfig.tsx";
 
 interface AuthContextType {
-  setToken(token: string): unknown;
   token: string;
   isLogged: () => boolean;
+
+  setToken(token: string): unknown;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -30,10 +33,29 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
     return token !== "";
   }
 
+  const navigate = useNavigate();
+  const request = instance.get("users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (
+    !location.pathname.startsWith("/dashboard") &&
+    location.pathname !== "/" &&
+    location.pathname !== "/about"
+  ) {
+    request.then((response) => {
+      if (response.status === 200) {
+        navigate("/dashboard");
+      }
+    });
+  }
+
   return (
-      <AuthContext.Provider value={{ token, setToken, isLogged }}>
-        {children}
-      </AuthContext.Provider>
+    <AuthContext.Provider value={{ token, setToken, isLogged }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 
