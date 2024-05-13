@@ -5,7 +5,7 @@ import LoginProcess from "./auth/LoginProcess.tsx";
 function AuthPage() {
   return (
     <>
-      <Stack mx={"auto"}>
+      <Stack justifyContent={"center"} mx={"auto"}>
         <Center mb={3}>
           <Heading size={"lg"}>Connectez-vous à UniFinance</Heading>
         </Center>
