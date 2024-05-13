@@ -5,6 +5,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 import AuthPage from "./components/AuthPage.tsx";
 import Home from "./components/Home.tsx";
 import DashboardHome from "./components/dashboard/DashboardHome.tsx";
+import AuthPageInscription from "./components/AuthPageInscription.tsx";
+import AboutPage from "./components/AboutPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -21,11 +23,11 @@ const router = createBrowserRouter([
       },
       {
         path: "about",
-        element: <div>About</div>,
+        element: <AboutPage />,
       },
       {
-        path: "contact",
-        element: <div>Contact</div>,
+        path: "inscription",
+        element: <AuthPageInscription />,
       },
       {
         path: "login",
