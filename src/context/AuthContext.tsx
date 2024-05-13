@@ -1,8 +1,15 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 
-const AuthContext = createContext({
+interface AuthContextType {
+  setToken(token: string): unknown;
+  token: string;
+  isLogged: () => boolean;
+}
+
+const AuthContext = createContext<AuthContextType>({
   token: "",
-  isLogged: () => Boolean(),
+  setToken: () => {},
+  isLogged: () => false,
 });
 
 function AuthContextProvider({ children }: { children: ReactNode }) {
@@ -24,9 +31,9 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ token, isLogged }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ token, setToken, isLogged }}>
+        {children}
+      </AuthContext.Provider>
   );
 }
 

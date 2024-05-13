@@ -7,7 +7,7 @@ import {Outlet, useLocation} from "react-router-dom";
 function MainPage() {
     const location = useLocation();
 
-    if (location.pathname === "/login") {
+    if (location.pathname === "/login" || location.pathname === "/inscription") {
         return (
             <>
                 <Flex pos="relative" direction="column" minH="100vh">

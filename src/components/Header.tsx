@@ -62,7 +62,7 @@ export default function Header() {
                         color={"white"}
                         fontSize={{ base: "xl", md: "2xl" }}
                         fontWeight={600}
-                        href={"#"}
+                        href={"about"}
                         variant={"link"}
                     >
                         À propos
@@ -89,7 +89,7 @@ export default function Header() {
                         _hover={{
                             bg: "#f6bf3f",
                         }}
-                        href={"#"}
+                        href={"inscription"}
                     >
                         Créer un compte
                     </Button>
