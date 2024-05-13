@@ -46,7 +46,7 @@ export default function Header() {
                         textAlign={useBreakpointValue({ base: "center", md: "left" })}
 
                     >
-                        <Link href={''}>UniFinances</Link>
+                        <Link href={'/'}>UniFinances</Link>
                     </Text>
                 </Flex>
 
