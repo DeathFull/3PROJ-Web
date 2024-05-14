@@ -13,11 +13,25 @@ import {
     FormControl,
     FormLabel,
     Input,
-    useDisclosure, Icon, Flex, Tag, TagLabel, TagCloseButton, Card, CardBody, Heading, Box, useBoolean
+    useDisclosure,
+    Icon,
+    Flex,
+    Tag,
+    TagLabel,
+    TagCloseButton,
+    Card,
+    CardBody,
+    Heading,
+    Box,
+    useBoolean,
+    Alert,
+    AlertIcon,
+    AlertTitle, AlertDescription, CardFooter, Divider, ButtonGroup
 } from "@chakra-ui/react";
 import {AuthContext} from "../../context/AuthContext.tsx";
 import instance from "../../api/ApiConfig.tsx";
 import {TiPlus} from "react-icons/ti";
+import {Bounce} from "react-awesome-reveal";
 
 function DashboardGroups() {
     const {isOpen, onOpen, onClose} = useDisclosure();
@@ -28,7 +42,8 @@ function DashboardGroups() {
     const [tags, setTags] = useState([] as string[]);
     const [user, setUser] = useState("");
     const [groups, setGroups] = useState([]);
-    //const [error, setError] = useBoolean();
+    const [error, setError] = useBoolean();
+
 
     useEffect(() => {
         getUserLogin();
@@ -77,8 +92,10 @@ function DashboardGroups() {
             const r = await instance.get(`users/email/${email}`);
             const userEmail = r.data;
             console.log("test2", userEmail);
+            setError.off();
             return userEmail;
         } catch (error) {
+            setError.on();
             console.error("non non non2", error);
         }
     };
@@ -91,6 +108,7 @@ function DashboardGroups() {
         })
             .then((response) => {
                 console.log("groupe créer", response)
+                console.log(response.data)
                 onClose();
             })
             .catch((error) => {
@@ -123,7 +141,7 @@ function DashboardGroups() {
                             w="300px"
                             h="300px"
                             bg="#D27E00"
-                            borderRadius="25"
+                            borderRadius="9"
                             onClick={onOpen}
                         >
                             <Icon
@@ -173,6 +191,15 @@ function DashboardGroups() {
                                             </Tag>
                                         ))}
                                     </Flex>
+                                    {error && (
+                                        <Bounce>
+                                            <Alert status="error">
+                                                <AlertIcon />
+                                                <AlertTitle>Mauvaise adresse email</AlertTitle>
+                                                <AlertDescription>Vérifiez l'adresse email</AlertDescription>
+                                            </Alert>
+                                        </Bounce>
+                                    )}
                                 </FormControl>
                             </ModalBody>
                             <ModalFooter>
@@ -187,18 +214,29 @@ function DashboardGroups() {
                         <Text fontSize={{base: "xl", md: "2xl"}}>Liste de vos groupes :</Text>
                         <Flex>
                             {groups.map((group: any) => (
-                                <Card maxW='sm'>
+                                <Card w="300px" h="300px" mr={"4"}>
                                     <CardBody>
                                         <Stack mt='6' spacing='3'>
                                             <Heading size='xl'>{group.name}</Heading>
                                             <Text>
                                                 {group.description}
                                             </Text>
-                                            <Text color='blue.600' fontSize='md'>
-                                                Members: {group.members.join(", ")}
+                                            <Text fontSize='md'>
+                                                Les Membres : {group.members.join(", ")}
                                             </Text>
                                         </Stack>
                                     </CardBody>
+                                    <Divider />
+                                    <CardFooter justifyContent={"center"}>
+                                        <ButtonGroup spacing='2'>
+                                            <Button color="white" bg="#D27E00" variant='solid'>
+                                                Allez sur le groupe
+                                            </Button>
+                                            <Button colorScheme='red' variant='solid'>
+                                                Delete
+                                            </Button>
+                                        </ButtonGroup>
+                                    </CardFooter>
                                 </Card>
                             ))}
                         </Flex>
