@@ -3,3 +3,11 @@ GET https://api.uni-finance.fr/
 
 ### GET /users
 GET https://api.uni-finance.fr/users
+
+### POST /users/email
+POST https://api.uni-finance.fr/users/email
+Content-Type: application/json
+
+{
+  "email": "ruru@ruru.fr"
+}

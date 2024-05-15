@@ -1,6 +1,4 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import instance from "../api/ApiConfig.tsx";
 
 interface AuthContextType {
   token: string;
@@ -31,25 +29,6 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
 
   function isLogged() {
     return token !== "";
-  }
-
-  const navigate = useNavigate();
-  const request = instance.get("users", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (
-    !location.pathname.startsWith("/dashboard") &&
-    location.pathname !== "/" &&
-    location.pathname !== "/about"
-  ) {
-    request.then((response) => {
-      if (response.status === 200) {
-        navigate("/dashboard");
-      }
-    });
   }
 
   return (
