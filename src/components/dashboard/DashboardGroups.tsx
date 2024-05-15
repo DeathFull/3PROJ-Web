@@ -26,7 +26,7 @@ import {
     useBoolean,
     Alert,
     AlertIcon,
-    AlertTitle, AlertDescription, CardFooter, Divider, ButtonGroup
+    AlertTitle, AlertDescription, CardFooter, Divider, ButtonGroup, Grid, GridItem
 } from "@chakra-ui/react";
 import {AuthContext} from "../../context/AuthContext.tsx";
 import instance from "../../api/ApiConfig.tsx";
@@ -40,7 +40,10 @@ function DashboardGroups() {
     const [description, setDescription] = useState("");
     const [members, setMembers] = useState("");
     const [tags, setTags] = useState([] as string[]);
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState({
+        _id: String(),
+        email: String()
+    });
     const [groups, setGroups] = useState([]);
     const [error, setError] = useBoolean();
 
@@ -58,7 +61,7 @@ function DashboardGroups() {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             const newTag = members.trim();
-            if (newTag) {
+            if (newTag && newTag !== user.email) {
                 getUserByEmail(newTag).then((v) => {
                     if (v && !tags.includes(newTag)) {
                         setTags([...tags, newTag]);
@@ -100,15 +103,20 @@ function DashboardGroups() {
         }
     };
 
-    const handleSubmit = () => {
-        instance.post("/groups", {name, members: tags, description, userId: user}, {
+    const handleSubmit = async () => {
+        const newMembers = [user._id];
+        for (const element of tags) {
+            newMembers.push((await getUserByEmail(element))._id);
+        }
+
+        instance.post("/groups", {name, members: newMembers, description}, {
             headers: {
                 Authorization: `Bearer ${authContext.token}`,
             },
         })
             .then((response) => {
                 console.log("groupe créer", response)
-                console.log(response.data)
+                console.log(user)
                 onClose();
             })
             .catch((error) => {
@@ -117,7 +125,11 @@ function DashboardGroups() {
     };
 
     const getGroups = () => {
-        instance.get("/groups")
+        instance.get(`/users/groups`, {
+            headers: {
+                Authorization: `Bearer ${authContext.token}`,
+            }
+        })
             .then((response) => {
                 setGroups(response.data);
                 console.log(response.data)
@@ -194,7 +206,7 @@ function DashboardGroups() {
                                     {error && (
                                         <Bounce>
                                             <Alert status="error">
-                                                <AlertIcon />
+                                                <AlertIcon/>
                                                 <AlertTitle>Mauvaise adresse email</AlertTitle>
                                                 <AlertDescription>Vérifiez l'adresse email</AlertDescription>
                                             </Alert>
@@ -212,35 +224,36 @@ function DashboardGroups() {
                     </Modal>
                     <Stack>
                         <Text fontSize={{base: "xl", md: "2xl"}}>Liste de vos groupes :</Text>
-                        <Flex>
+                        <Grid gap={3} templateColumns='repeat(3, 3fr)'>
                             {groups.map((group: any) => (
-                                <Card w="300px" h="300px" mr={"4"}>
-                                    <CardBody>
-                                        <Stack mt='6' spacing='3'>
-                                            <Heading size='xl'>{group.name}</Heading>
-                                            <Text>
-                                                {group.description}
-                                            </Text>
-                                            <Text fontSize='md'>
-                                                Les Membres : {group.members.join(", ")}
-                                            </Text>
-                                        </Stack>
-                                    </CardBody>
-                                    <Divider />
-                                    <CardFooter justifyContent={"center"}>
-                                        <ButtonGroup spacing='2'>
-                                            <Button color="white" bg="#D27E00" variant='solid'>
-                                                Allez sur le groupe
-                                            </Button>
-                                            <Button colorScheme='red' variant='solid'>
-                                                Delete
-                                            </Button>
-                                        </ButtonGroup>
-                                    </CardFooter>
-                                </Card>
+                                <GridItem w="100%">
+                                    <Card mr={"4"}>
+                                        <CardBody>
+                                            <Stack mt='6' spacing='3'>
+                                                <Heading size='xl'>{group.name}</Heading>
+                                                <Text>
+                                                    {group.description}
+                                                </Text>
+                                                <Text fontSize='md'>
+                                                    Les Membres : {group.members.join(", ")}
+                                                </Text>
+                                            </Stack>
+                                        </CardBody>
+                                        <Divider/>
+                                        <CardFooter justifyContent={"center"}>
+                                            <ButtonGroup spacing='2'>
+                                                <Button color="white" bg="#D27E00" variant='solid'>
+                                                    Allez sur le groupe
+                                                </Button>
+                                                <Button colorScheme='red' variant='solid'>
+                                                    Supprimer
+                                                </Button>
+                                            </ButtonGroup>
+                                        </CardFooter>
+                                    </Card>
+                                </GridItem>
                             ))}
-                        </Flex>
-
+                        </Grid>
                     </Stack>
                 </VStack>
             </Box>
