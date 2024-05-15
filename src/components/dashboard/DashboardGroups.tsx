@@ -1,32 +1,37 @@
 import {ChangeEvent, useContext, useEffect, useState} from "react";
 import {
-    VStack,
-    Stack,
-    Text,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Box,
     Button,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-    FormControl,
-    FormLabel,
-    Input,
-    useDisclosure,
-    Icon,
-    Flex,
-    Tag,
-    TagLabel,
-    TagCloseButton,
     Card,
     CardBody,
+    CardFooter,
+    Divider,
+    Flex,
+    FormControl,
+    FormLabel,
+    Grid,
+    GridItem,
     Heading,
-    Box,
+    Icon,
+    Input, Link,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Stack,
+    Tag,
+    TagCloseButton,
+    TagLabel,
+    Text,
     useBoolean,
-    Alert,
-    AlertIcon,
-    AlertTitle, AlertDescription, CardFooter, Divider, ButtonGroup, Grid, GridItem
+    useDisclosure,
+    VStack
 } from "@chakra-ui/react";
 import {AuthContext} from "../../context/AuthContext.tsx";
 import instance from "../../api/ApiConfig.tsx";
@@ -47,6 +52,8 @@ function DashboardGroups() {
     const [groups, setGroups] = useState([]);
     const [error, setError] = useBoolean();
 
+
+    console.log(groups)
 
     useEffect(() => {
         getUserLogin();
@@ -227,7 +234,7 @@ function DashboardGroups() {
                         <Grid gap={3} templateColumns='repeat(3, 3fr)'>
                             {groups.map((group: any) => (
                                 <GridItem w="100%">
-                                    <Card mr={"4"}>
+                                    <Card h={"100%"} mr={"4"}>
                                         <CardBody>
                                             <Stack mt='6' spacing='3'>
                                                 <Heading size='xl'>{group.name}</Heading>
@@ -241,14 +248,11 @@ function DashboardGroups() {
                                         </CardBody>
                                         <Divider/>
                                         <CardFooter justifyContent={"center"}>
-                                            <ButtonGroup spacing='2'>
-                                                <Button color="white" bg="#D27E00" variant='solid'>
+                                            <Link href={`/dashboard/groups/${group._id}`}>
+                                                <Button as="a" color="white" bg="#D27E00" variant='solid'>
                                                     Allez sur le groupe
                                                 </Button>
-                                                <Button colorScheme='red' variant='solid'>
-                                                    Supprimer
-                                                </Button>
-                                            </ButtonGroup>
+                                            </Link>
                                         </CardFooter>
                                     </Card>
                                 </GridItem>

@@ -39,7 +39,7 @@ function DashboardHeader() {
                         />
                     </MenuButton>
                     <MenuList>
-                        <Link href={"/"}>
+                        <Link href={"/"} style={{ textDecoration: "none" }}>
                             <MenuItem onClick={handleLogout}>
                                 <Icon as={IoIosLogOut} boxSize={6} mr={"5"}/>
                                 Déconnexion
