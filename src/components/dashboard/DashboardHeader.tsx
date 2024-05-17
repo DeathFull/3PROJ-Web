@@ -34,7 +34,7 @@ function DashboardHeader() {
                         <Avatar
                             size={'sm'}
                             src={
-                                'https://bit.ly/broken-link'
+                                ''
                             }
                         />
                     </MenuButton>

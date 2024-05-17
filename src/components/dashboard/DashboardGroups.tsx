@@ -52,13 +52,10 @@ function DashboardGroups() {
     const [groups, setGroups] = useState([]);
     const [error, setError] = useBoolean();
 
-
-    console.log(groups)
-
     useEffect(() => {
         getUserLogin();
         getGroups();
-    }, []);
+    }, [authContext]);
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setMembers(event.target.value);
@@ -91,6 +88,7 @@ function DashboardGroups() {
         })
             .then((r) => {
                 setUser(r.data)
+                console.log(r.data)
             })
             .catch((error) => {
                 console.error("non non non", error)
@@ -233,8 +231,8 @@ function DashboardGroups() {
                         <Text fontSize={{base: "xl", md: "2xl"}}>Liste de vos groupes :</Text>
                         <Grid gap={3} templateColumns='repeat(3, 3fr)'>
                             {groups.map((group: any) => (
-                                <GridItem w="100%">
-                                    <Card h={"100%"} mr={"4"}>
+                                <GridItem key={group._id} w="100%">
+                                    <Card h={"100%"} mr={"2"}>
                                         <CardBody>
                                             <Stack mt='6' spacing='3'>
                                                 <Heading size='xl'>{group.name}</Heading>
@@ -249,7 +247,7 @@ function DashboardGroups() {
                                         <Divider/>
                                         <CardFooter justifyContent={"center"}>
                                             <Link href={`/dashboard/groups/${group._id}`}>
-                                                <Button as="a" color="white" bg="#D27E00" variant='solid'>
+                                                <Button color="white" bg="#D27E00" variant='solid'>
                                                     Allez sur le groupe
                                                 </Button>
                                             </Link>
