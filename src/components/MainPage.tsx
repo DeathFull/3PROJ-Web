@@ -38,8 +38,8 @@ function MainPage() {
           {location.pathname.startsWith("/dashboard") ? (
             <>
               <DashboardHeader />
-              <Flex flex={1} minW={"100vw"}>
-                <Box w={"20vw"} bg={"#d17d00"}>
+              <Flex flex={1} minW={"100%"}>
+                <Box w={"20%"} bg={"#d17d00"}>
                   <Center>
                     <VStack>
                       <DashboardSidebarLink name={"Accueil"} icon={FiHome} />

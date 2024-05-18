@@ -10,6 +10,9 @@ import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../context/AuthContext.tsx";
 import {useParams} from "react-router-dom";
 import {Bounce} from "react-awesome-reveal";
+import BalanceModal from "./component/BalanceModal.tsx";
+import ExpensesModal from "./component/ExpensesModal.tsx";
+import UserType from "../../../types/UserType.tsx";
 
 function HomeGroups() {
     const authContext = useContext(AuthContext);
@@ -18,22 +21,19 @@ function HomeGroups() {
     const [members, setMembers] = useState("");
     const [tags, setTags] = useState([] as string[]);
     const [error, setError] = useBoolean();
-    const [user, setUser] = useState({
-        _id: String(),
-        email: String()
-    });
+    const [user, setUser] = useState<UserType>({} as UserType);
     const {isOpen, onOpen, onClose} = useDisclosure();
     const [errorCount, setErrorCount] = useState(0);
 
     useEffect(() => {
         getUserLogin();
-        getGroup()
-    }, [id]);
+        getGroup();
+    }, []);
 
     const getGroup = () => {
         instance.get(`/groups/${id}`, {
             headers: {
-                Authorization: `Bearer ${authContext.token}`,
+                Authorization: `Bearer ${authContext.getToken()}`,
             }
         })
             .then((response) => {
@@ -66,7 +66,7 @@ function HomeGroups() {
     const getUserLogin = () => {
         instance.get(`/users`, {
             headers: {
-                Authorization: `Bearer ${authContext.token}`,
+                Authorization: `Bearer ${authContext.getToken()}`,
             },
         })
             .then((r) => {
@@ -101,7 +101,7 @@ function HomeGroups() {
         if (newMembers.length > 0) {
             await instance.put(`/groups/${id}/addUser`, {members: newMembers}, {
                 headers: {
-                    Authorization: `Bearer ${authContext.token}`,
+                    Authorization: `Bearer ${authContext.getToken()}`,
                 }
             })
                 .then((response) => {
@@ -122,11 +122,12 @@ function HomeGroups() {
     const handleQuitGroup = () => {
         instance.put(`/groups/${id}/removeUser`, {id : user._id},{
             headers: {
-                Authorization: `Bearer ${authContext.token}`,
+                Authorization: `Bearer ${authContext.getToken()}`,
             }
         })
             .then((response) => {
                 console.log("supprimer", response)
+                window.location.href = "http://localhost:5173/dashboard"
             })
             .catch((error) => {
                 console.error("Marche pas2", error);
@@ -139,28 +140,28 @@ function HomeGroups() {
                     alignItems={"center"}
                     flexDir={"column"}
                     display={"flex"}
-                    w={"100%"}
+                    w={"80%"}
                 >
                     {group ? (
                         <Heading mb={8}>Bienvenue sur le Groupe : {group.name}</Heading>
                     ) : (
                         <Heading mb={8}>Loading...</Heading>
                     )}
-                    <Stack w={"100%"} maxW={"600px"} spacing={6}>
+                    <Stack w={"100%"} maxW={"75%"} spacing={6}>
                         <Box p={5} borderWidth="1px" shadow="md">
-                            <Heading fontSize="xl">Bloc 1</Heading>
-                            <Button mt={4} colorScheme="teal">Voir les soldes</Button>
+                            <Heading mb={4} size="md">Solde du groupe</Heading>
+                            {<BalanceModal />}
                         </Box>
                         <Box p={5} borderWidth="1px" shadow="md">
-                            <Heading fontSize="xl">Bloc 2</Heading>
-                            <Button mt={4} colorScheme="teal">Ajouter une dépense</Button>
+                            <Heading mb={4} size="md">Dépenses</Heading>
+                            <ExpensesModal user={user} />
                         </Box>
                         <Box p={5} borderWidth="1px" shadow="md">
-                            <Heading fontSize="xl">Bloc 2</Heading>
-                            <Button mt={4} colorScheme="teal">Faire un Remboursement</Button>
+                            <Heading mb={4} size="md">Remboursements</Heading>
+                            <Button mt={4} color="white" bg="#D27E00">Faire un Remboursement</Button>
                         </Box>
                     </Stack>
-                    <Button mt={4} colorScheme="teal" onClick={onOpen}>Ajouter un membre</Button>
+                    <Button mt={4} color="white" bg="#D27E00" onClick={onOpen}>Ajouter un membre</Button>
                     <Modal isOpen={isOpen} onClose={onClose}>
                         <ModalContent>
                             <ModalHeader>Ajouter des membres</ModalHeader>
@@ -194,12 +195,12 @@ function HomeGroups() {
                                 </FormControl>
                             </ModalBody>
                             <ModalFooter>
-                                <Button colorScheme="teal" onClick={handleAddMembers}>Ajouter</Button>
+                                <Button color="white" bg="#D27E00" onClick={handleAddMembers}>Ajouter</Button>
                                 <Button onClick={onClose}>Annuler</Button>
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
-                    <Button mt={2} colorScheme={"teal"} onClick={handleQuitGroup}> Quitter le groupe </Button>
+                    <Button mt={2} color="white" bg="#D27E00" onClick={handleQuitGroup}> Quitter le groupe </Button>
                 </Box>
             </>
         );

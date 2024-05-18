@@ -9,6 +9,7 @@ import AuthPageInscription from "./components/AuthPageInscription.tsx";
 import AboutPage from "./components/AboutPage.tsx";
 import DashboardGroups from "./components/dashboard/DashboardGroups.tsx";
 import HomeGroups from "./components/dashboard/Groups/HomeGroups.tsx";
+import DashboardSettings from "./components/dashboard/DashboardSettings.tsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard/groups/:id",
         element: <HomeGroups />,
+      },
+      {
+        path: "dashboard/settings",
+        element: <DashboardSettings />,
       }
     ],
   },

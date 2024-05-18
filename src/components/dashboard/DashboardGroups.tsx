@@ -83,7 +83,7 @@ function DashboardGroups() {
     const getUserLogin = () => {
         instance.get(`/users`, {
             headers: {
-                Authorization: `Bearer ${authContext.token}`,
+                Authorization: `Bearer ${authContext.getToken()}`,
             },
         })
             .then((r) => {
@@ -97,7 +97,11 @@ function DashboardGroups() {
 
     const getUserByEmail = async (email: string) => {
         try {
-            const r = await instance.get(`users/email/${email}`);
+            const r = await instance.get(`users/email/${email}`, {
+                headers: {
+                    Authorization: `Bearer ${authContext.getToken()}`,
+                }
+            });
             const userEmail = r.data;
             console.log("test2", userEmail);
             setError.off();
@@ -116,13 +120,13 @@ function DashboardGroups() {
 
         instance.post("/groups", {name, members: newMembers, description}, {
             headers: {
-                Authorization: `Bearer ${authContext.token}`,
+                Authorization: `Bearer ${authContext.getToken()}`,
             },
         })
             .then((response) => {
                 console.log("groupe créer", response)
-                console.log(user)
                 onClose();
+                getGroups();
             })
             .catch((error) => {
                 console.error("Marche pas:", error);
@@ -132,12 +136,11 @@ function DashboardGroups() {
     const getGroups = () => {
         instance.get(`/users/groups`, {
             headers: {
-                Authorization: `Bearer ${authContext.token}`,
+                Authorization: `Bearer ${authContext.getToken()}`,
             }
         })
             .then((response) => {
                 setGroups(response.data);
-                console.log(response.data)
             })
             .catch((error) => {
                 console.error("non non non3", error);
@@ -240,7 +243,7 @@ function DashboardGroups() {
                                                     {group.description}
                                                 </Text>
                                                 <Text fontSize='md'>
-                                                    Les Membres : {group.members.join(", ")}
+                                                    Les Membres : {group.members.map((v) => v.email).join(", ")}
                                                 </Text>
                                             </Stack>
                                         </CardBody>
