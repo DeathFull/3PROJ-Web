@@ -15,7 +15,7 @@ function BalanceModal() {
     interface Balance {
         _id: string;
         balance: number;
-        user: User;
+        idUser: User;
     }
 
     const {id} = useParams<{ id: string }>();

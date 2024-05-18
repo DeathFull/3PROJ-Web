@@ -1,7 +1,19 @@
-import { Box, Heading, Text, Button } from "@chakra-ui/react";
+import {
+    Alert, AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    Box,
+    Button,
+    FormControl,
+    FormLabel,
+    Heading,
+    Input,
+    Stack, useBoolean
+} from "@chakra-ui/react";
 import instance from "../../api/ApiConfig.tsx";
 import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../context/AuthContext.tsx";
+import {Bounce} from "react-awesome-reveal";
 
 function DashboardSettings() {
     const authContext = useContext(AuthContext);
@@ -11,8 +23,9 @@ function DashboardSettings() {
     });
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
-    const [email, setEmail] = useState('');
-    const [avatar, setAvatar] = useState(null);
+    const [iban, setIban] = useState('');
+    const [error, setError] = useBoolean();
+    const [errorCount, setErrorCount] = useState(0);
 
     useEffect(() => {
         getUserLogin();
@@ -34,31 +47,87 @@ function DashboardSettings() {
     };
 
     const handleUpdateUsers = () => {
-        instance.put(`/users/${user._id}`, {...user,firstname, lastname, email, avatar,}, {
+        if (iban.length < 14) {
+            setError.on();
+            setErrorCount(errorCount + 1);
+            return;
+        } else if (iban.length > 34) {
+            setError.on();
+            setErrorCount(errorCount + 1);
+            return;
+        }
+
+        instance.put(`/users`, {...user, firstname, lastname, iban}, {
             headers: {
                 Authorization: `Bearer ${authContext.getToken()}`,
             },
         })
             .then((r) => {
+                console.log("Utilisateur bien modifié")
                 setUser(r.data)
             })
+            .catch((error) => {
+                console.error("échec de la modification", error)
+            });
     }
 
     return (
-        <Box p={4}>
-            <Heading as="h1" mb={4} size="lg">Paramètres du tableau de bord</Heading>
-
-            <Box mb={4}>
-                <Heading as="h2" mb={2} size="md">Paramètre 1</Heading>
-                <Text>Description du paramètre 1.</Text>
+        <>
+            <Box maxW="500px" mx="auto" p={6} bg="white" borderRadius="md" shadow="lg">
+                <Heading as="h2" mb={6} textAlign="center" size="lg">
+                    Modifiez votre compte
+                </Heading>
+                <form>
+                    <Stack spacing={4}>
+                        <FormControl id="lastname">
+                            <FormLabel>Nom :</FormLabel>
+                            <Input
+                                onChange={(e) => setLastname(e.target.value)}
+                                placeholder="Entrez votre nom"
+                                type="text"
+                                value={lastname}
+                            />
+                        </FormControl>
+                        <FormControl id="firstname">
+                            <FormLabel>Prénom :</FormLabel>
+                            <Input
+                                onChange={(e) => setFirstname(e.target.value)}
+                                placeholder="Entrez votre prénom"
+                                type="text"
+                                value={firstname}
+                            />
+                        </FormControl>
+                        <FormControl id="iban">
+                            <FormLabel>Ajoutez un Iban :</FormLabel>
+                            <Input
+                                onChange={(e) => setIban(e.target.value)}
+                                placeholder="Entrez votre IBAN"
+                                type="text"
+                                value={iban}
+                            />
+                        </FormControl>
+                    </Stack>
+                    <Button
+                        w="100%"
+                        mt={6}
+                        colorScheme="orange"
+                        onClick={handleUpdateUsers}
+                        variant="solid"
+                    >
+                        Appliquer
+                    </Button>
+                    {error && (
+                        <Bounce key={errorCount}>
+                            <Alert status="error">
+                                <AlertIcon/>
+                                <AlertTitle>L'Iban n'est pas de la bonne taille</AlertTitle>
+                                <AlertDescription>Il doit être entre 14 et 34 caractères</AlertDescription>
+                            </Alert>
+                        </Bounce>
+                    )}
+                </form>
             </Box>
-
-            <Box mb={4}>
-                <Heading as="h2" mb={2} size="md">Paramètre 2</Heading>
-                <Text>Description du paramètre 2.</Text>
-            </Box>
-            <Button colorScheme="blue">Enregistrer les modifications</Button>
-        </Box>
+        </>
     );
 }
 

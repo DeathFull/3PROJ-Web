@@ -76,10 +76,10 @@ function ExpensesModal(props: { user: UserType }) {
     }, []);
 
     const handleSubmitExpenses = (user = props.user) => {
-        const hamid = user._id;
+        const User = user._id;
         instance.post(`/expenses/`, {
             idGroup: id,
-            idUser: hamid,
+            idUser: User,
             name,
             description,
             amount,
