@@ -15,6 +15,7 @@ import {
     Tr
 } from "@chakra-ui/react";
 import UserType from "../../../../types/UserType.tsx";
+import AddUserRefunds from "./AddUserRefunds.tsx";
 
 function ExpensesModal(props: { user: UserType }) {
     interface User {
@@ -42,7 +43,6 @@ function ExpensesModal(props: { user: UserType }) {
     const [date, setDate] = useState("");
     const [justification, setJustification] = useState("");
     const [category, setCategory] = useState("");
-
 
     const handleOpenModal = () => {
         setIsOpen(true);
@@ -154,6 +154,10 @@ function ExpensesModal(props: { user: UserType }) {
                                 <FormControl>
                                     <FormLabel>Date :</FormLabel>
                                     <Input onChange={(e) => setDate(e.target.value)} type="date" value={date}/>
+                                </FormControl>
+                                <FormControl>
+                                    <FormLabel>Ajouter les utilisateurs :</FormLabel>
+                                    <AddUserRefunds payerId={props.user._id} groupId={id} amount={amount}/>
                                 </FormControl>
                                 <FormControl>
                                     <FormLabel>Justification :</FormLabel>
