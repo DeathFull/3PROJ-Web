@@ -44,10 +44,9 @@ function DashboardHome() {
             })
             .then((r) => {
                 setUser(r.data);
-                console.log(r.data);
             })
             .catch((error) => {
-                console.error("non non non", error);
+                console.error("échec du get utilisateur", error);
             });
     };
 
@@ -65,12 +64,11 @@ function DashboardHome() {
                     totalBalance += balance.balance;
                     balances[balance.idGroup] = (balances[balance.idGroup] || 0) + balance.balance;
                 });
-                console.log("Solde total :", totalBalance);
                 setTotalBalance(totalBalance);
                 setGroupBalances(balances);
             })
             .catch((error) => {
-                console.error("nononono", error);
+                console.error("échec", error);
             });
     };
 
@@ -103,9 +101,11 @@ function DashboardHome() {
             });
             setGroups(groups);
         } catch (error) {
-            console.error("nononono", error);
+            console.error("erreur de la récupération des dépenses", error);
         }
     };
+
+    console.log(user)
 
     return (
         <>
@@ -114,7 +114,7 @@ function DashboardHome() {
                     <Stack w={"100%"} maxW={"75%"} spacing={6}>
                         <Box p={6} bg="gray.100" borderRadius="xl">
                             <Heading mb={4} size="lg">
-                                Bienvenue sur votre compte, {user.firstname}
+                                Bienvenue sur votre compte, {user !== undefined ? user.firstname : "" }
                             </Heading>
                             <Box p={6} bg="white">
                                 <Heading mb={2} size="md">

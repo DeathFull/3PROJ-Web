@@ -88,10 +88,9 @@ function DashboardGroups() {
         })
             .then((r) => {
                 setUser(r.data)
-                console.log(r.data)
             })
             .catch((error) => {
-                console.error("non non non", error)
+                console.error("erreur lors du get de l'utilisateur login", error)
             });
     };
 
@@ -103,12 +102,11 @@ function DashboardGroups() {
                 }
             });
             const userEmail = r.data;
-            console.log("test2", userEmail);
             setError.off();
             return userEmail;
         } catch (error) {
             setError.on();
-            console.error("non non non2", error);
+            console.error("erreur lors de récupération des utilisateurs par l'email", error);
         }
     };
 
@@ -129,7 +127,7 @@ function DashboardGroups() {
                 getGroups();
             })
             .catch((error) => {
-                console.error("Marche pas:", error);
+                console.error("échec de l'ajout du groupe:", error);
             });
     };
 
@@ -143,7 +141,7 @@ function DashboardGroups() {
                 setGroups(response.data);
             })
             .catch((error) => {
-                console.error("non non non3", error);
+                console.error("Pas de groupe récupérer", error);
             });
     }
 
