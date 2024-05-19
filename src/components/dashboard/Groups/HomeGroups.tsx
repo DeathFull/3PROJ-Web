@@ -31,8 +31,9 @@ import { Bounce } from "react-awesome-reveal";
 import BalanceModal from "./component/BalanceModal.tsx";
 import ExpensesModal from "./component/ExpensesModal.tsx";
 import UserType from "../../../types/UserType.tsx";
-import RefundModal from "./component/DebtModal.tsx";
+import DebtModal from "./component/DebtModal.tsx";
 import GroupType from "../../../types/GroupType.tsx";
+import RefundModal from "./component/RefundModal.tsx";
 
 function HomeGroups() {
   const authContext = useContext(AuthContext);
@@ -206,13 +207,20 @@ function HomeGroups() {
             <Heading mb={4} size="md">
               Dépenses
             </Heading>
-            <ExpensesModal user={user} group={group} />
+            {<ExpensesModal user={user} group={group}/>
+               }
           </Box>
           <Box p={5} borderWidth="1px" shadow="md">
             <Heading mb={4} size="md">
               Remboursements à effectuer
             </Heading>
-            <RefundModal />
+            {<DebtModal/>}
+          </Box>
+          <Box p={5} borderWidth="1px" shadow="md">
+            <Heading mb={4} size="md">
+              Remboursements effectuer
+            </Heading>
+            {<RefundModal/>}
           </Box>
         </Stack>
         <Button mt={4} color="white" bg="#D27E00" onClick={onOpen}>

@@ -72,7 +72,7 @@ function AddDebts(props: {
 
     const refunder = props.group.members.filter((v) => {
       console.log(v);
-      v.email === refunderInput;
+      return v.email === refunderInput;
     });
 
     console.log(refunder);
