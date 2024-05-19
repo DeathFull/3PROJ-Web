@@ -15,7 +15,7 @@ import {
     Tr
 } from "@chakra-ui/react";
 import UserType from "../../../../types/UserType.tsx";
-import AddUserRefunds from "./AddUserRefunds.tsx";
+import AddDebts from "./AddDebts.tsx";
 
 function ExpensesModal(props: { user: UserType }) {
     interface User {
@@ -157,7 +157,7 @@ function ExpensesModal(props: { user: UserType }) {
                                 </FormControl>
                                 <FormControl>
                                     <FormLabel>Ajouter les utilisateurs :</FormLabel>
-                                    <AddUserRefunds payerId={props.user._id} groupId={id} amount={amount}/>
+                                    <AddDebts payerId={props.user._id} groupId={id} amount={amount}/>
                                 </FormControl>
                                 <FormControl>
                                     <FormLabel>Justification :</FormLabel>

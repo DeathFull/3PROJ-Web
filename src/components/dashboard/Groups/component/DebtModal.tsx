@@ -10,39 +10,38 @@ import {
 } from "@chakra-ui/react";
 
 
-function RefundModal() {
-
-    interface User {
+function DebtModal() {   interface User {
         email: string;
     }
 
-    interface Refund {
+    interface Debt {
         _id: string;
-        payerId: string;
+        receiverId: string;
         refunderId: string;
         idUser: User;
         amount: number;
     }
 
     const {id} = useParams<{ id: string }>();
-    const [refunds, setRefunds] = useState<Refund[]>([]);
+    const [debts, setDebts] = useState<Debt[]>([]);
     const authContext = useContext(AuthContext);
 
-    const getRefundUser = async () => {
+    const getGroupDebts = async () => {
         try {
-            const response = await instance.get(`/refunds/group/${id}`, {
+            const response = await instance.get(`/debts/${id}`, {
                 headers: {
                     Authorization: `Bearer ${authContext.getToken()}`,
                 },
             });
-            setRefunds(response.data);
+            setDebts(response.data);
+            console.log(debts)
         } catch (error) {
             console.error("Erreur lors de la récupération des remboursements :", error);
         }
     };
 
     useEffect(() => {
-        getRefundUser().then();
+        getGroupDebts().then();
     }, []);
 
     return (
@@ -57,11 +56,11 @@ function RefundModal() {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {refunds.map((refund) => refund.idUser !== null && (
-                            <Tr key={refund._id}>
-                                <Td>{refund.payerId}</Td>
-                                <Td>{refund.refunderId}</Td>
-                                <Td isNumeric>{refund.amount} €</Td>
+                        {debts.map((debt) => debt.idUser !== null && (
+                            <Tr key={debt._id}>
+                                <Td>{debt.receiverId}</Td>
+                                <Td>{debt.refunderId}</Td>
+                                <Td isNumeric>{debt.amount} €</Td>
                             </Tr>
                         ))}
                     </Tbody>
@@ -72,4 +71,4 @@ function RefundModal() {
 }
 
 
-export default RefundModal;
+export default DebtModal;
