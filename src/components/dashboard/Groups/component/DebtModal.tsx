@@ -3,27 +3,18 @@ import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../../../context/AuthContext.tsx";
 import instance from "../../../../api/ApiConfig.tsx";
 import {
+    Button,
     Table, TableContainer,
     Tbody,
     Td, Th, Thead,
     Tr
 } from "@chakra-ui/react";
+import DebtType from "../../../../types/DebtType.tsx";
 
 
-function DebtModal() {   interface User {
-        email: string;
-    }
-
-    interface Debt {
-        _id: string;
-        receiverId: string;
-        refunderId: string;
-        idUser: User;
-        amount: number;
-    }
-
+function DebtModal() {
     const {id} = useParams<{ id: string }>();
-    const [debts, setDebts] = useState<Debt[]>([]);
+    const [debts, setDebts] = useState<DebtType[]>([]);
     const authContext = useContext(AuthContext);
 
     const getGroupDebts = async () => {
@@ -40,9 +31,34 @@ function DebtModal() {   interface User {
         }
     };
 
+    const handleDebt = async (debt) => {
+        try {
+            const newDebt = {refunderId: debt.refunderId._id, amount: -debt.amount}
+            const newRefund = {payerId: debt.receiverId._id, refunderId: debt.refunderId._id, idGroup: id, amount: debt.amount, date: new Date()}
+            await instance.put(`/debts/${id}`, newDebt, {
+                headers: {
+                    Authorization: `Bearer ${authContext.getToken()}`,
+                },
+            });
+
+            await instance.post(`/refunds/`, newRefund, {
+                headers: {
+                    Authorization: `Bearer ${authContext.getToken()}`,
+                },
+            });
+
+            await getGroupDebts();
+
+        } catch (error) {
+            console.error("Erreur lors de la modification dce la dette :", error);
+        }
+    };
+
     useEffect(() => {
         getGroupDebts().then();
     }, []);
+
+    console.log(debts)
 
     return (
         <>
@@ -53,14 +69,16 @@ function DebtModal() {   interface User {
                             <Th>Créditeur</Th>
                             <Th>Débiteur</Th>
                             <Th>Montant</Th>
+                            <Th>Régler la somme</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {debts.map((debt) => debt.idUser !== null && (
+                        {debts.map((debt) => debt.idUser !== null && debt.amount > 0 && (
                             <Tr key={debt._id}>
-                                <Td>{debt.receiverId}</Td>
-                                <Td>{debt.refunderId}</Td>
+                                <Td>{debt.receiverId.email}</Td>
+                                <Td>{debt.refunderId.email}</Td>
                                 <Td isNumeric>{debt.amount} €</Td>
+                                <Td><Button mt={2} color="white" bg="#D27E00" onClick={() => handleDebt(debt)}>Régler la somme</Button></Td>
                             </Tr>
                         ))}
                     </Tbody>

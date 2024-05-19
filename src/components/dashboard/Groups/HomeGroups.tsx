@@ -31,8 +31,9 @@ import { Bounce } from "react-awesome-reveal";
 import BalanceModal from "./component/BalanceModal.tsx";
 import ExpensesModal from "./component/ExpensesModal.tsx";
 import UserType from "../../../types/UserType.tsx";
-import RefundModal from "./component/DebtModal.tsx";
+import DebtModal from "./component/DebtModal.tsx";
 import GroupType from "../../../types/GroupType.tsx";
+import RefundModal from "./component/RefundModal.tsx";
 
 function HomeGroups() {
   const authContext = useContext(AuthContext);
@@ -166,6 +167,27 @@ function HomeGroups() {
       });
   };
 
+  const exportExpensesRefund = (format) => {
+    instance.get(`groups/export/${id}?format=${format}`, {
+      headers: {
+        Authorization: `Bearer ${authContext.getToken()}`,
+      },
+      responseType: 'blob'
+    })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `expenses.${format}`);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        })
+        .catch((error) => {
+          console.error("échec de l'export", error)
+        });
+  }
+
   return (
     <>
       <Box alignItems={"center"} flexDir={"column"} display={"flex"} w={"80%"}>
@@ -185,13 +207,20 @@ function HomeGroups() {
             <Heading mb={4} size="md">
               Dépenses
             </Heading>
-            <ExpensesModal user={user} group={group} />
+            {<ExpensesModal user={user} group={group}/>
+               }
           </Box>
           <Box p={5} borderWidth="1px" shadow="md">
             <Heading mb={4} size="md">
               Remboursements à effectuer
             </Heading>
-            <RefundModal />
+            {<DebtModal/>}
+          </Box>
+          <Box p={5} borderWidth="1px" shadow="md">
+            <Heading mb={4} size="md">
+              Remboursements effectuer
+            </Heading>
+            {<RefundModal/>}
           </Box>
         </Stack>
         <Button mt={4} color="white" bg="#D27E00" onClick={onOpen}>
@@ -243,6 +272,8 @@ function HomeGroups() {
           {" "}
           Quitter le groupe{" "}
         </Button>
+        <Button mt={2} color="white" bg="#D27E00" onClick={() => exportExpensesRefund('pdf')}>Exporter en PDF</Button>
+        <Button mt={2} color="white" bg="#D27E00" onClick={() => exportExpensesRefund('csv')}>Exporter en CSV</Button>
       </Box>
     </>
   );
