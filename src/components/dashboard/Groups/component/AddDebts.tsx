@@ -15,12 +15,10 @@ import instance from "../../../../api/ApiConfig.tsx";
 import UserType from "../../../../types/UserType.tsx";
 import {AuthContext} from "../../../../context/AuthContext.tsx";
 
-
-function AddUserRefunds(props: {
+function AddDebts(props: {
     payerId: string;
     groupId: string | undefined;
     amount: number;
-
 }) {
     const [members, setMembers] = useState("");
     const authContext = useContext(AuthContext);
@@ -29,6 +27,7 @@ function AddUserRefunds(props: {
     const [tags, setTags] = useState([] as string[]);
     const [user, setUser] = useState<UserType>({} as UserType);
     const [refunder, setRefunder] = useState<UserType>({} as UserType);
+    const [addedDebts, setAddedDebts] = useState([] as { email: string; percentage: number; amount: number }[]);
 
     useEffect(() => {
         getUserLogin();
@@ -42,8 +41,6 @@ function AddUserRefunds(props: {
         if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
             const newTag = members.trim();
-            console.log(newTag)
-            console.log(user.email)
             if (newTag && newTag !== user.email) {
                 getUserByEmail(newTag).then((v) => {
                     if (v && !tags.includes(newTag)) {
@@ -63,10 +60,9 @@ function AddUserRefunds(props: {
         })
             .then((r) => {
                 setUser(r.data)
-                console.log(r.data)
             })
             .catch((error) => {
-                console.error("non non non", error)
+                console.error("Erreur lors de la récupération de l'utilisateur", error)
             });
     };
 
@@ -78,12 +74,10 @@ function AddUserRefunds(props: {
                 },
             });
             const userEmail = r.data;
-            console.log("test2", userEmail);
             setRefunder(userEmail)
-            console.log(refunder)
             return userEmail;
         } catch (error) {
-            console.error("non non non2", error);
+            console.error("Erreur lors de la récupération de l'utilisateur par email", error);
         }
     };
 
@@ -91,24 +85,27 @@ function AddUserRefunds(props: {
         setTags(tags.filter(tag => tag !== tagToRemove));
     }
 
-    const handleAddUserRefunds = async () => {
+    const handleAddUserDebts = async () => {
         if (percentage < 0 || percentage > 100) {
             setError("Le pourcentage doit être compris entre 0 et 100.");
             return;
         }
 
-        const refund = {
+        const debt = {
             payerId: props.payerId, refunderId: refunder._id, idGroup: props.groupId,
             amount: (props.amount * (percentage / 100))
         }
-        console.log(refund)
+        const newRefund = { email: refunder.email, percentage: percentage, amount: debt.amount };
+        console.log(debt)
         console.log(authContext.getToken())
-        await instance.put(`/refunds/${props.groupId}`, refund, {
+        await instance.put(`/debts/${props.groupId}`, debt, {
             headers: {
                 Authorization: `Bearer ${authContext.getToken()}`,
             },
         }).then((r) => {
             console.log("marche", r)
+            setAddedDebts([...addedDebts, newRefund]);
+            console.log(addedDebts)
             setPercentage(0);
             setError("");
         }).catch((error) => {
@@ -149,13 +146,21 @@ function AddUserRefunds(props: {
                 {error && <Text color="red.500">{error}</Text>}
                 <Button
                     colorScheme="orange"
-                    onClick={handleAddUserRefunds}
+                    onClick={handleAddUserDebts}
                 >
                     Ajouter
                 </Button>
+            </Stack>
+            <Stack mt={4} spacing={4}>
+                <Text>Liste des remboursements ajoutés :</Text>
+                {addedDebts.map((debt, index) => (
+                    <Flex key={index} align="center">
+                        <Text>{debt.email} - Pourcentage: {debt.percentage}%, Montant: {debt.amount}</Text>
+                    </Flex>
+                ))}
             </Stack>
         </>
     );
 }
 
-export default AddUserRefunds;
+export default AddDebts;

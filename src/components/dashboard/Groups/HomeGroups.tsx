@@ -13,7 +13,7 @@ import {Bounce} from "react-awesome-reveal";
 import BalanceModal from "./component/BalanceModal.tsx";
 import ExpensesModal from "./component/ExpensesModal.tsx";
 import UserType from "../../../types/UserType.tsx";
-import RefundModal from "./component/RefundModal.tsx";
+import RefundModal from "./component/DebtModal.tsx";
 
 function HomeGroups() {
     const authContext = useContext(AuthContext);
@@ -169,7 +169,7 @@ function HomeGroups() {
                             <ModalCloseButton/>
                             <ModalBody>
                                 <FormControl id="" isRequired>
-                                    <FormLabel>Entrez les adresses email des membres</FormLabel>
+                                    <FormLabel>Entrez les adresses email des membres :</FormLabel>
                                     <Input
                                         onChange={(e) => handleInputChange(e)}
                                         onKeyDown={handleInputKeyDown}

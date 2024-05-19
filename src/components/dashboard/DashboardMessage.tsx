@@ -15,15 +15,15 @@ function DashboardMessage() {
     };
 
     return (
-        <Box pos="relative" w="100%" p={4} bg="gray.100">
+        <Box w="100%" p={4} bg="gray.100">
             <Center mb={4}>
                 <Heading>Messages</Heading>
             </Center>
-            <HStack h="full" spacing={4}>
+            <HStack h={"75%"}spacing={4}>
                 <VStack
                     overflowY="auto"
                     w="25%"
-                    h="full"
+                    h={"100%"}
                     p={4}
                     bg="white"
                     borderRadius="md"
@@ -31,15 +31,14 @@ function DashboardMessage() {
                     divider={<StackDivider />}
                 >
                     {conversations.map((conversation, index) => (
-                        <Button key={index} justifyContent="flex-start" w="full">
+                        <Button key={index} justifyContent="flex-start" w="full" >
                             {conversation}
                         </Button>
                     ))}
                 </VStack>
                 <VStack
-                    overflowY="auto"
                     w="75%"
-                    h="full"
+                    h={"100%"}
                     p={4}
                     bg="white"
                     borderRadius="md"
