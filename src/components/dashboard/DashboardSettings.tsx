@@ -26,6 +26,7 @@ function DashboardSettings() {
   const [lastname, setLastname] = useState("");
   const [iban, setIban] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [avatarFile, setAvatarFile] = useState({} as File);
   const [error, setError] = useBoolean();
   const [errorCount, setErrorCount] = useState(0);
   const inputRef = useRef(null);
@@ -50,7 +51,6 @@ function DashboardSettings() {
       })
       .then((r) => {
         setUser(r.data);
-        console.log(r.data);
       })
       .catch((error) => {
         console.error("non non non", error);
@@ -68,18 +68,35 @@ function DashboardSettings() {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("file", avatarFile);
+
+    let newAvatar = "";
+
+    if (avatarFile.name !== undefined) {
+      instance
+        .post("/users/updateImage", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authContext.getToken()}`,
+          },
+        })
+        .then((r) => {
+          newAvatar = r.data;
+        });
+    }
+
     instance
       .put(
         `/users`,
-        { ...user, firstname, lastname, iban },
+        { ...user, firstname, lastname, iban, newAvatar },
         {
           headers: {
             Authorization: `Bearer ${authContext.getToken()}`,
           },
         },
       )
-      .then((r) => {
-        console.log("Utilisateur bien modifié");
+      .then(() => {
         getUserLogin();
       })
       .catch((error) => {
@@ -89,19 +106,19 @@ function DashboardSettings() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    setAvatarFile(file);
     setAvatar(URL.createObjectURL(file));
-    console.log(URL.createObjectURL(file));
   };
 
   return (
     <>
       <Box
+        alignContent={"center"}
         mx="auto"
         p={6}
         bg="white"
         borderRadius="md"
         shadow="lg"
-        alignContent={"center"}
       >
         <Heading as="h2" mb={6} textAlign="center" size="lg">
           Modifier votre compte
@@ -114,22 +131,22 @@ function DashboardSettings() {
                 user.firstname !== undefined &&
                 user.firstname.concat(" ", user.lastname)
               }
-              src={avatar !== undefined && avatar}
               size={"xl"}
+              src={avatar !== undefined && avatar}
             />
             <Input
-              type="file"
-              accept="image/*"
               ref={inputRef}
-              style={{ display: "none" }}
+              accept="image/*"
               onChange={handleImageChange}
+              style={{ display: "none" }}
+              type="file"
             />
             <Button
+              mb={3}
               colorScheme="blue"
               onClick={() => {
                 inputRef.current!.click();
               }}
-              mb={3}
             >
               Changer d'avatar
             </Button>
@@ -172,7 +189,7 @@ function DashboardSettings() {
           </Button>
           {error && (
             <Bounce key={errorCount}>
-              <Alert status="error" flexDirection="column" mt={3}>
+              <Alert flexDir="column" mt={3} status="error">
                 <AlertIcon />
                 <AlertTitle>L'IBAN est incorrect !</AlertTitle>
                 <AlertDescription>
