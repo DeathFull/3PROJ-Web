@@ -6,35 +6,27 @@ const teamMembers = [
         name: "Rudy",
         role: "Développeur Full Stack & Chef de Projet",
         avatar: "public/Rudy.png",
-        description:
-            "Rudy",
     },
     {
         name: "Paul",
         role: "Développeur Mobile",
         avatar: "public/Paul.png",
-        description:
-            "Paul",
     },
     {
         name: "Brice",
         role: "Développeur Back-End",
         avatar: "public/Brice.png",
-        description:
-            "Brice",
     },
     {
         name: "Flavien",
         role: "Développeur Front-end & Designer UI/UX",
         avatar: "public/Flavien.png",
-        description:
-            "Flavien",
     },
 ];
 
 const AboutPage: React.FC = () => {
     return (
-        <Flex justify="flex-start">
+        <Flex align="center" justify="space-between" minH="100vh" p={4}>
             <Box w="50%" p={4}>
                 <VStack align="center" spacing={8}>
                     <Heading as="h1" size="xl">
@@ -45,7 +37,7 @@ const AboutPage: React.FC = () => {
                             key={index}
                             align="center"
                             direction="row"
-                            maxW="600px"
+                            w="600px"
                             p={4}
                             textAlign="center"
                             shadow="md"
@@ -59,18 +51,22 @@ const AboutPage: React.FC = () => {
                                 <Text fontSize="lg" fontWeight="bold">
                                     {member.role}
                                 </Text>
-                                <Text>{member.description}</Text>
                             </VStack>
                         </Flex>
                     ))}
                 </VStack>
             </Box>
-            <Box w="50%" p={4}>
-                <Text fontSize="xl" fontWeight="bold" textAlign="center">
+            <Flex
+                align="left"
+                justify="left"
+                w="50%"
+                p={4}
+            >
+                <Text fontSize="xl" fontWeight="bold" textAlign="left">
                     Nous sommes fiers de notre équipe et de notre travail pour créer une expérience de remboursement
                     d'argent entre amis agréable et sécurisée. L'application sert à faliciter les échanges.
                 </Text>
-            </Box>
+            </Flex>
         </Flex>
     );
 };

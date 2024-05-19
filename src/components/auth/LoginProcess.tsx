@@ -69,7 +69,7 @@ function LoginProcess() {
     <>
       <Stack onKeyDown={(e) => e.key === "Enter" && handleLogin()}>
         <Button bg={"none"} border="solid 2px black"
-                onClick={() => window.location.href = "http://localhost:3000/users/login/google?redirectUrl=http://localhost:5173/login"}>
+                onClick={() => window.location.href = "https://api.uni-finance.fr/users/login/google?redirectUrl=http://localhost:5173/login"}>
           <Flex align="center">
             <Icon as={FcGoogle} boxSize={6} mr={2}/>
             <Heading size="md">Connectez-vous à Google</Heading>

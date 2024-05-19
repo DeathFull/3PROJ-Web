@@ -47,7 +47,7 @@ export default function Header() {
                         textAlign={useBreakpointValue({ base: "center", md: "left" })}
 
                     >
-                        <Link href={''}>UniFinances</Link>
+                        <Link href={'/'} style={{ textDecoration: "none" }}>UniFinances</Link>
                     </Text>
                 </Flex>
 
@@ -63,6 +63,7 @@ export default function Header() {
                         fontSize={{ base: "xl", md: "2xl" }}
                         fontWeight={600}
                         href={"about"}
+                        style={{ textDecoration: "none" }}
                         variant={"link"}
                     >
                         À propos
@@ -73,6 +74,7 @@ export default function Header() {
                         fontSize={{ base: "xl", md: "2xl" }}
                         fontWeight={600}
                         href={"login"}
+                        style={{ textDecoration: "none" }}
                         variant={"link"}
                     >
                         Connexion

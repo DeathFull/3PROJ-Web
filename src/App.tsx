@@ -7,6 +7,10 @@ import Home from "./components/Home.tsx";
 import DashboardHome from "./components/dashboard/DashboardHome.tsx";
 import AuthPageInscription from "./components/AuthPageInscription.tsx";
 import AboutPage from "./components/AboutPage.tsx";
+import DashboardGroups from "./components/dashboard/DashboardGroups.tsx";
+import HomeGroups from "./components/dashboard/Groups/HomeGroups.tsx";
+import DashboardSettings from "./components/dashboard/DashboardSettings.tsx";
+import DashboardMessage from "./components/dashboard/DashboardMessage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +41,22 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: <DashboardHome />,
       },
+      {
+        path: "dashboard/groups",
+        element: <DashboardGroups />,
+      },
+      {
+        path: "dashboard/groups/:id",
+        element: <HomeGroups />,
+      },
+      {
+        path: "dashboard/settings",
+        element: <DashboardSettings />,
+      },
+      {
+        path: "dashboard/message",
+        element: <DashboardMessage />,
+      }
     ],
   },
 ]);

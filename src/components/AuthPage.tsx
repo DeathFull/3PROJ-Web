@@ -3,22 +3,25 @@ import LoginProcess from "./auth/LoginProcess.tsx";
 import {useNavigate} from "react-router-dom";
 import instance from "../api/ApiConfig.tsx";
 import {AuthContext} from "../context/AuthContext.tsx";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 
 function AuthPage() {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
-  const request = instance.get("users", {
-    headers: {
-      Authorization: `Bearer ${authContext.token}`,
-    },
+  
+  useEffect(() => {
+    const request = instance.get("users", {
+      headers: {
+        Authorization: `Bearer ${authContext.getToken()}`,
+      },
+    });
+    request.then((response) => {
+      if (response.status === 200) {
+        navigate("/dashboard");
+      }
+    });
   });
 
-  request.then((response) => {
-    if (response.status === 200) {
-      navigate("/dashboard");
-    }
-  });
 
   return (
     <>

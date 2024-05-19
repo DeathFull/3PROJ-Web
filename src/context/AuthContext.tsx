@@ -2,25 +2,21 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 
 interface AuthContextType {
   setToken(token: string): unknown;
-  token: string;
+  getToken: () => string;
   isLogged: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  token: "",
+  getToken: () => "",
   setToken: () => {},
   isLogged: () => false,
 });
 
 function AuthContextProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState("");
-  useEffect(() => {
-    const localToken = localStorage.getItem("token");
-    if (localToken !== null) {
-      const tokenData = JSON.parse(localToken);
-      if (tokenData) setToken(tokenData);
-    }
-  }, []);
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem("token");
+    return storedToken ? JSON.parse(storedToken) : "";
+  });
 
   useEffect(() => {
     localStorage.setItem("token", JSON.stringify(token));
@@ -30,8 +26,12 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
     return token !== "";
   }
 
+  function getToken() {
+    return token;
+  }
+
   return (
-      <AuthContext.Provider value={{ token, setToken, isLogged }}>
+      <AuthContext.Provider value={{ getToken, setToken, isLogged }}>
         {children}
       </AuthContext.Provider>
   );
