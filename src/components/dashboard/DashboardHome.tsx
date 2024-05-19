@@ -1,12 +1,11 @@
-import {Box, Center, Heading, Stack, Text} from "@chakra-ui/react";
-import instance from "../../api/ApiConfig.tsx";
-import {useContext, useEffect, useState} from "react";
-import {AuthContext} from "../../context/AuthContext.tsx";
-import UserType from "../../types/UserType.tsx";
-import { Pie } from 'react-chartjs-2';
+import { Box, Center, Heading, Stack, Text } from "@chakra-ui/react";
+import instance from "../../api/ApiConfig";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import UserType from "../../types/UserType";
+import ExpensesChart from "../ExpensesChart";
 
 function DashboardHome() {
-
     interface User {
         email: string;
     }
@@ -20,88 +19,93 @@ function DashboardHome() {
         justification: string;
         category: string;
         idUser: User;
+        idGroup: string;
     }
 
     const authContext = useContext(AuthContext);
     const [user, setUser] = useState<UserType>({} as UserType);
-    const [totalBalance, setTotalbalance] = useState(0)
+    const [totalBalance, setTotalBalance] = useState(0);
     const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [groups, setGroups] = useState({});
-
+    const [groups, setGroups] = useState<{ [key: string]: string }>({});
+    const [groupBalances, setGroupBalances] = useState<{ [key: string]: number }>({});
 
     useEffect(() => {
         getUser();
         getBalance();
-        getUserExpenses().then();
+        getUserExpenses();
     }, []);
 
-
     const getUser = () => {
-        instance.get(`/users`, {
-            headers: {
-                Authorization: `Bearer ${authContext.getToken()}`,
-            },
-        })
+        instance
+            .get(`/users`, {
+                headers: {
+                    Authorization: `Bearer ${authContext.getToken()}`,
+                },
+            })
             .then((r) => {
-                setUser(r.data)
-                console.log(r.data)
+                setUser(r.data);
+                console.log(r.data);
             })
             .catch((error) => {
-                console.error("non non non", error)
+                console.error("non non non", error);
             });
     };
 
     const getBalance = () => {
-        instance.get(`/balances/user`, {
-            headers: {
-                Authorization: `Bearer ${authContext.getToken()}`,
-            },
-        })
+        instance
+            .get(`/balances/user`, {
+                headers: {
+                    Authorization: `Bearer ${authContext.getToken()}`,
+                },
+            })
             .then((r) => {
                 let totalBalance = 0;
-                r.data.forEach((balance) => {
+                const balances: { [key: string]: number } = {};
+                r.data.forEach((balance: { balance: number; idGroup: string }) => {
                     totalBalance += balance.balance;
+                    balances[balance.idGroup] = (balances[balance.idGroup] || 0) + balance.balance;
                 });
                 console.log("Solde total :", totalBalance);
-                setTotalbalance(totalBalance);
+                setTotalBalance(totalBalance);
+                setGroupBalances(balances);
             })
             .catch((error) => {
-                console.error("nononono", error)
-            })
-    }
+                console.error("nononono", error);
+            });
+    };
+
     const getUserExpenses = async () => {
         try {
             const response = await instance.get(`/expenses/user`, {
                 headers: {
                     Authorization: `Bearer ${authContext.getToken()}`,
                 },
-            })
-            const sortedExpenses = response.data.sort((a, b) => b.date - a.date);
+            });
+
+            const sortedExpenses = response.data.sort((a: Expense, b: Expense) => new Date(b.date).getTime() - new Date(a.date).getTime());
             const latestExpenses = sortedExpenses.slice(0, 10);
             setExpenses(latestExpenses);
-            console.log(expenses)
 
-            const groupIds = [...new Set(latestExpenses.map(expense => expense.idGroup))];
-            console.log(groupIds)
-            const groupResponses = await Promise.all(groupIds.map(idGroup =>
-                instance.get(`/groups/${idGroup}`, {
-                    headers: {
-                        Authorization: `Bearer ${authContext.getToken()}`,
-                    },
-                })
-            ));
+            const groupIds = [...new Set(latestExpenses.map((expense) => expense.idGroup))];
+            const groupResponses = await Promise.all(
+                groupIds.map((idGroup) =>
+                    instance.get(`/groups/${idGroup}`, {
+                        headers: {
+                            Authorization: `Bearer ${authContext.getToken()}`,
+                        },
+                    })
+                )
+            );
 
-            const groups = {};
-            groupResponses.forEach(response => {
+            const groups: { [key: string]: string } = {};
+            groupResponses.forEach((response) => {
                 groups[response.data._id] = response.data.name;
-
             });
             setGroups(groups);
-        }catch(error)  {
-                console.error("nononono", error)
-            }
-    }
-
+        } catch (error) {
+            console.error("nononono", error);
+        }
+    };
 
     return (
         <>
@@ -109,13 +113,19 @@ function DashboardHome() {
                 <Center>
                     <Stack w={"100%"} maxW={"75%"} spacing={6}>
                         <Box p={6} bg="gray.100" borderRadius="xl">
-                            <Heading mb={4} size="lg">Bienvenue sur votre compte, {user.firstname}</Heading>
+                            <Heading mb={4} size="lg">
+                                Bienvenue sur votre compte, {user.firstname}
+                            </Heading>
                             <Box p={6} bg="white">
-                                <Heading mb={2} size="md">Votre Solde :</Heading>
+                                <Heading mb={2} size="md">
+                                    Votre Solde :
+                                </Heading>
                                 <Heading size="2xl">{totalBalance} €</Heading>
                             </Box>
-                            <Box p={6} bg="white" >
-                                <Heading mb={2} size="md">Vos dernières dépenses :</Heading>
+                            <Box p={6} bg="white">
+                                <Heading mb={2} size="md">
+                                    Vos dernières dépenses :
+                                </Heading>
                                 {expenses.map((expense) => (
                                     <Box key={expense._id} mb={2} p={4} bg="gray.200" borderRadius="xl">
                                         <Text fontWeight="bold">{expense.name}</Text>
@@ -123,6 +133,7 @@ function DashboardHome() {
                                         <Text>{expense.amount} €</Text>
                                     </Box>
                                 ))}
+                                <ExpensesChart expenses={expenses} balances={groupBalances} groupNames={groups} />
                             </Box>
                         </Box>
                     </Stack>
