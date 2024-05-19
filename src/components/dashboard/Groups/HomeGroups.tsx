@@ -166,6 +166,27 @@ function HomeGroups() {
       });
   };
 
+  const exportExpensesRefund = (format) => {
+    instance.get(`groups/export/${id}?format=${format}`, {
+      headers: {
+        Authorization: `Bearer ${authContext.getToken()}`,
+      },
+      responseType: 'blob'
+    })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `expenses.${format}`);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        })
+        .catch((error) => {
+          console.error("échec de l'export", error)
+        });
+  }
+
   return (
     <>
       <Box alignItems={"center"} flexDir={"column"} display={"flex"} w={"80%"}>
@@ -243,6 +264,8 @@ function HomeGroups() {
           {" "}
           Quitter le groupe{" "}
         </Button>
+        <Button mt={2} color="white" bg="#D27E00" onClick={() => exportExpensesRefund('pdf')}>Exporter en PDF</Button>
+        <Button mt={2} color="white" bg="#D27E00" onClick={() => exportExpensesRefund('csv')}>Exporter en CSV</Button>
       </Box>
     </>
   );
