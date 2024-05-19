@@ -35,7 +35,6 @@ function BalanceModal() {
         },
       });
       setBalances(response.data);
-      console.log(balances);
     } catch (error) {
       console.error("Erreur lors de la récupération des soldes :", error);
     }

@@ -3,7 +3,6 @@ import { Box, Heading } from '@chakra-ui/react';
 import { Line, Pie } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 
-// Register the components needed for the charts
 Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
 
 interface ExpensesChartProps {
@@ -13,7 +12,6 @@ interface ExpensesChartProps {
 }
 
 const ExpensesChart: React.FC<ExpensesChartProps> = ({ expenses, balances, groupNames }) => {
-    // Data for the line chart
     const lineData = {
         labels: expenses.map(expense => new Date(expense.date).toLocaleDateString()),
         datasets: [

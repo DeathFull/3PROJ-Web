@@ -62,7 +62,7 @@ function HomeGroups() {
         setGroup(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching group data:", error);
+        console.error("N'arrive pas à charger la data:", error);
       });
   };
 
@@ -94,10 +94,9 @@ function HomeGroups() {
       })
       .then((r) => {
         setUser(r.data);
-        console.log(r.data);
       })
       .catch((error) => {
-        console.error("non non non", error);
+        console.error("échec de la récupération du compte", error);
       });
   };
 
@@ -105,10 +104,9 @@ function HomeGroups() {
     try {
       const r = await instance.get(`users/email/${email}`);
       const userEmail = r.data;
-      console.log("test2", userEmail);
       return userEmail;
     } catch (error) {
-      console.error("non non non2", error);
+      console.error("échec du getUserByEmail", error);
     }
   };
 
@@ -134,12 +132,11 @@ function HomeGroups() {
         )
         .then((response) => {
           console.log("Ajouter", response);
-          console.log(newMembers);
           setError.off();
           onClose();
         })
         .catch((error) => {
-          console.error("Marche pas", error);
+          console.error("Membre pas ajouter dans le groupe", error);
         });
     } else {
       setError.on();
@@ -163,7 +160,7 @@ function HomeGroups() {
         window.location.href = "http://localhost:5173/dashboard";
       })
       .catch((error) => {
-        console.error("Marche pas2", error);
+        console.error("Marche pas", error);
       });
   };
 
@@ -178,7 +175,7 @@ function HomeGroups() {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', `expenses.${format}`);
+          link.setAttribute('téléchargement', `expenses.${format}`);
           document.body.appendChild(link);
           link.click();
           link.remove();
@@ -194,7 +191,7 @@ function HomeGroups() {
         {group ? (
           <Heading mb={8}>Bienvenue sur le Groupe : {group.name}</Heading>
         ) : (
-          <Heading mb={8}>Loading...</Heading>
+          <Heading mb={8}>Chargement...</Heading>
         )}
         <Stack w={"100%"} maxW={"75%"} spacing={6}>
           <Box p={5} borderWidth="1px" shadow="md">

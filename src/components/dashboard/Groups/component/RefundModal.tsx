@@ -17,7 +17,6 @@ function RefundModal() {
     const authContext = useContext(AuthContext);
 
     const getGroupRefunds = async () => {
-        console.log("caca caca")
         try {
             const response = await instance.get(`/refunds/group/${id}`, {
                 headers: {
@@ -25,8 +24,6 @@ function RefundModal() {
                 },
             });
             setRefunds(response.data);
-            console.log(response);
-            console.log(refunds, "caca caca")
         } catch (error) {
             console.error("Erreur lors de la récupération des remboursements :", error);
         }
@@ -35,8 +32,6 @@ function RefundModal() {
     useEffect(() => {
         getGroupRefunds().then();
     }, []);
-
-    console.log(refunds)
 
     return (
         <>

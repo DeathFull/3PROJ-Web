@@ -25,7 +25,6 @@ function DebtModal() {
                 },
             });
             setDebts(response.data);
-            console.log(debts)
         } catch (error) {
             console.error("Erreur lors de la récupération des remboursements :", error);
         }
@@ -57,8 +56,6 @@ function DebtModal() {
     useEffect(() => {
         getGroupDebts().then();
     }, []);
-
-    console.log(debts)
 
     return (
         <>

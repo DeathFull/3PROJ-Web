@@ -1,14 +1,16 @@
 import {SetStateAction, useContext, useState} from "react";
 import {
+    Alert, AlertDescription, AlertIcon, AlertTitle,
     Button, Center, Flex,
     FormControl,
     FormErrorMessage, Heading, Icon,
     Input,
-    Stack,
+    Stack, useBoolean,
 } from "@chakra-ui/react";
 import instance from "../../api/ApiConfig.tsx";
 import {AuthContext} from "../../context/AuthContext.tsx";
 import {FcGoogle} from "react-icons/fc";
+import {Bounce} from "react-awesome-reveal";
 
 function CreateAccount() {
     const [firstname, setFirstname] = useState("");
@@ -17,6 +19,8 @@ function CreateAccount() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [error, setError] = useBoolean();
+    const [success, setSuccess] = useBoolean();
     const authContext = useContext(AuthContext);
 
     const handlePasswordChange = (event: {
@@ -42,9 +46,11 @@ function CreateAccount() {
                 .then((r) => {
                     const token = r.data.token;
                     authContext.setToken(token);
+                    setSuccess.on();
                 })
                 .catch((error) => {
                     console.error("erreur lors de l'inscription :", error);
+                    setError.on();
                 });
         }
     };
@@ -124,6 +130,24 @@ function CreateAccount() {
                 >
                     S'inscrire
                 </Button>
+                {error && (
+                    <Bounce>
+                        <Alert status="error">
+                            <AlertIcon/>
+                            <AlertTitle>échec de l'inscription !</AlertTitle>
+                            <AlertDescription>Commencer une nouvelle tentative</AlertDescription>
+                        </Alert>
+                    </Bounce>
+                )}
+                {success && (
+                    <Bounce>
+                        <Alert status="success">
+                            <AlertIcon/>
+                            <AlertTitle>Inscription réussie !</AlertTitle>
+                            <AlertDescription>Aller sur la page Connexion pour vous connecter</AlertDescription>
+                        </Alert>
+                    </Bounce>
+                )}
             </Stack>
         </>
     );
