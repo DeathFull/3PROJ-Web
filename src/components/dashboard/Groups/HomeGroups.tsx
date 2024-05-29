@@ -5,7 +5,6 @@ import {
   AlertTitle,
   Box,
   Button,
-  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -17,9 +16,6 @@ import {
   ModalFooter,
   ModalHeader,
   Stack,
-  Tag,
-  TagCloseButton,
-  TagLabel,
   useBoolean,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -40,7 +36,6 @@ function HomeGroups() {
   const { id } = useParams();
   const [group, setGroup] = useState<GroupType>({} as GroupType);
   const [members, setMembers] = useState("");
-  const [tags, setTags] = useState([] as string[]);
   const [error, setError] = useBoolean();
   const [user, setUser] = useState<UserType>({} as UserType);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -70,21 +65,6 @@ function HomeGroups() {
     setMembers(e.target.value);
   };
 
-  const handleInputKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      const newTag = members.trim();
-      if (newTag && newTag !== user.email) {
-        getUserByEmail(newTag).then((v) => {
-          if (v && !tags.includes(newTag)) {
-            setTags([...tags, newTag]);
-            setMembers("");
-          }
-        });
-      }
-    }
-  };
-
   const getUserLogin = () => {
     instance
       .get(`/users`, {
@@ -102,7 +82,11 @@ function HomeGroups() {
 
   const getUserByEmail = async (email: string) => {
     try {
-      const r = await instance.get(`users/email/${email}`);
+      const r = await instance.get(`users/email/${email}`, {
+        headers: {
+          Authorization: `Bearer ${authContext.getToken()}`,
+        },
+      });
       const userEmail = r.data;
       return userEmail;
     } catch (error) {
@@ -110,20 +94,13 @@ function HomeGroups() {
     }
   };
 
-  const handleTagRemove = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
-  };
-
   const handleAddMembers = async () => {
-    const newMembers: string[] = [];
-    for (const element of tags) {
-      newMembers.push((await getUserByEmail(element))._id);
-    }
-    if (newMembers.length > 0) {
+    const newMember = await getUserByEmail(members);
+    if (newMember && newMember._id !== undefined) {
       await instance
         .put(
           `/groups/${id}/addUser`,
-          { members: newMembers },
+          { idUser: newMember._id },
           {
             headers: {
               Authorization: `Bearer ${authContext.getToken()}`,
@@ -136,6 +113,8 @@ function HomeGroups() {
           onClose();
         })
         .catch((error) => {
+          setError.on();
+          setErrorCount(errorCount + 1);
           console.error("Membre pas ajouter dans le groupe", error);
         });
     } else {
@@ -165,25 +144,26 @@ function HomeGroups() {
   };
 
   const exportExpensesRefund = (format) => {
-    instance.get(`groups/export/${id}?format=${format}`, {
-      headers: {
-        Authorization: `Bearer ${authContext.getToken()}`,
-      },
-      responseType: 'blob'
-    })
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('téléchargement', `expenses.${format}`);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        })
-        .catch((error) => {
-          console.error("échec de l'export", error)
-        });
-  }
+    instance
+      .get(`groups/export/${id}?format=${format}`, {
+        headers: {
+          Authorization: `Bearer ${authContext.getToken()}`,
+        },
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `expenses.${format}`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      })
+      .catch((error) => {
+        console.error("échec de l'export", error);
+      });
+  };
 
   return (
     <>
@@ -204,20 +184,19 @@ function HomeGroups() {
             <Heading mb={4} size="md">
               Dépenses
             </Heading>
-            {<ExpensesModal user={user} group={group}/>
-               }
+            {<ExpensesModal user={user} group={group} />}
           </Box>
           <Box p={5} borderWidth="1px" shadow="md">
             <Heading mb={4} size="md">
               Remboursements à effectuer
             </Heading>
-            {<DebtModal/>}
+            {<DebtModal user={user} />}
           </Box>
           <Box p={5} borderWidth="1px" shadow="md">
             <Heading mb={4} size="md">
-              Remboursements effectuer
+              Remboursements effectué(s)
             </Heading>
-            {<RefundModal/>}
+            {<RefundModal />}
           </Box>
         </Stack>
         <Button mt={4} color="white" bg="#D27E00" onClick={onOpen}>
@@ -232,18 +211,9 @@ function HomeGroups() {
                 <FormLabel>Entrez les adresses email des membres :</FormLabel>
                 <Input
                   onChange={(e) => handleInputChange(e)}
-                  onKeyDown={handleInputKeyDown}
                   placeholder="Entrez des adresses email"
                   value={members}
                 />
-                <Flex mt={2}>
-                  {tags.map((tag, index) => (
-                    <Tag key={index} mr={1} mb={1} bg="#D27E00" variant="solid">
-                      <TagLabel>{tag}</TagLabel>
-                      <TagCloseButton onClick={() => handleTagRemove(tag)} />
-                    </Tag>
-                  ))}
-                </Flex>
                 {error && (
                   <Bounce>
                     <Alert mt={2} status="error">
@@ -269,8 +239,22 @@ function HomeGroups() {
           {" "}
           Quitter le groupe{" "}
         </Button>
-        <Button mt={2} color="white" bg="#D27E00" onClick={() => exportExpensesRefund('pdf')}>Exporter en PDF</Button>
-        <Button mt={2} color="white" bg="#D27E00" onClick={() => exportExpensesRefund('csv')}>Exporter en CSV</Button>
+        <Button
+          mt={2}
+          color="white"
+          bg="#D27E00"
+          onClick={() => exportExpensesRefund("pdf")}
+        >
+          Exporter en PDF
+        </Button>
+        <Button
+          mt={2}
+          color="white"
+          bg="#D27E00"
+          onClick={() => exportExpensesRefund("csv")}
+        >
+          Exporter en CSV
+        </Button>
       </Box>
     </>
   );

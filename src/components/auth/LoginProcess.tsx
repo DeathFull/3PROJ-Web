@@ -1,19 +1,23 @@
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import {
   Alert,
   AlertDescription,
   AlertIcon,
   AlertTitle,
-  Button, Center, Flex, Heading, Icon,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  Icon,
   Input,
   Stack,
   useBoolean,
 } from "@chakra-ui/react";
 import instance from "../../api/ApiConfig.tsx";
-import {AuthContext} from "../../context/AuthContext.tsx";
-import {Bounce} from "react-awesome-reveal";
-import {useNavigate} from "react-router-dom";
-import {FcGoogle} from "react-icons/fc";
+import { AuthContext } from "../../context/AuthContext.tsx";
+import { Bounce } from "react-awesome-reveal";
+import { useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 function LoginProcess() {
   const [email, setEmail] = useState("");
@@ -28,7 +32,7 @@ function LoginProcess() {
   const authContext = useContext(AuthContext);
   const handleLogin = () => {
     instance
-      .post("users/login", {email, password})
+      .post("users/login", { email, password })
       .then((response) => {
         const token = response.data.token;
         authContext.setToken(token);
@@ -46,32 +50,37 @@ function LoginProcess() {
 
   function checkForTokenInUrl() {
     const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
+    const token = urlParams.get("token");
     if (token) {
-      instance.get(`/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      instance
+        .get(`/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then(() => {
           authContext.setToken(token);
           navigate("/dashboard");
         })
         .catch((error) => {
-          console.error("token invalid", error)
+          console.error("token invalid", error);
         });
     }
   }
 
-
-  checkForTokenInUrl()
+  checkForTokenInUrl();
   return (
     <>
       <Stack onKeyDown={(e) => e.key === "Enter" && handleLogin()}>
-        <Button bg={"none"} border="solid 2px black"
-                onClick={() => window.location.href = "https://api.uni-finance.fr/users/login/google?redirectUrl=http://localhost:5173/login"}>
+        <Button
+          bg={"none"}
+          border="solid 2px black"
+          onClick={() =>
+            (window.location.href = `https://api.uni-finance.fr/users/login/google?redirectUrl=${window.location.origin}/login`)
+          }
+        >
           <Flex align="center">
-            <Icon as={FcGoogle} boxSize={6} mr={2}/>
+            <Icon as={FcGoogle} boxSize={6} mr={2} />
             <Heading size="md">Connectez-vous à Google</Heading>
           </Flex>
         </Button>
@@ -101,7 +110,7 @@ function LoginProcess() {
           mb={5}
           textColor={"white"}
           bg={"gray.700"}
-          _hover={{bg: "gray.600"}}
+          _hover={{ bg: "gray.600" }}
           onClick={handleLogin}
         >
           Se connecter
@@ -109,7 +118,7 @@ function LoginProcess() {
         {error && (
           <Bounce key={errorCount}>
             <Alert status="error">
-              <AlertIcon/>
+              <AlertIcon />
               <AlertTitle>Connexion échouée !</AlertTitle>
               <AlertDescription>Vérifiez vos identifiants.</AlertDescription>
             </Alert>
@@ -118,7 +127,7 @@ function LoginProcess() {
         {success && (
           <Bounce>
             <Alert status="success">
-              <AlertIcon/>
+              <AlertIcon />
               <AlertTitle>Connexion réussie !</AlertTitle>
               <AlertDescription>Redirection en cours...</AlertDescription>
             </Alert>

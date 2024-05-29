@@ -83,9 +83,7 @@ function AddDebts(props: {
     }
 
     const debt = {
-      payerId: props.payerId,
       refunderId: refunder[0]._id,
-      idGroup: props.group._id,
       amount: props.amount * (percentage / 100),
     };
 
@@ -95,7 +93,7 @@ function AddDebts(props: {
       amount: debt.amount,
     };
 
-    console.log(debt);
+    console.log("debt", debt);
     console.log(authContext.getToken());
     await instance
       .put(`/debts/${props.group._id}`, debt, {
