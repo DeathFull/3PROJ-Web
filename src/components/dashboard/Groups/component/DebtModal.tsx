@@ -38,7 +38,11 @@ function DebtModal(props: { user: UserType }) {
 
   const handleDebt = async (debt) => {
     try {
-      const newDebt = { refunderId: debt.receiverId._id, amount: -debt.amount };
+      const newDebt = {
+        receiverId: debt.refunderId._id,
+        refunderId: debt.receiverId._id,
+        amount: -debt.amount,
+      };
       const newRefund = {
         payerId: debt.receiverId._id,
         refunderId: debt.refunderId._id,

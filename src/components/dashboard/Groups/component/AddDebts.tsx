@@ -83,7 +83,8 @@ function AddDebts(props: {
     }
 
     const debt = {
-      refunderId: refunder[0]._id,
+      receiverId: refunder[0]._id,
+      refunderId: user._id,
       amount: props.amount * (percentage / 100),
     };
 
